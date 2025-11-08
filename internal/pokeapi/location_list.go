@@ -3,16 +3,24 @@ package pokeapi
 import (
 	"encoding/json"
 	"io"
-	"net/http"
 )
 
-func LocationAreaList(pageURL *string) (RespLocationArea, error) {
+func (c *Client) LocationAreaList(pageURL *string) (RespLocationArea, error) {
 	url := "https://pokeapi.co/api/v2/location-area/?offset=0&limit=20"
 	if pageURL != nil {
 		url = *pageURL
 	}
 
-	res, err := http.Get(url)
+	if val, ok := c.cache.Get(url); ok {
+		locations := RespLocationArea{}
+		if err := json.Unmarshal(val, &locations); err != nil {
+			return RespLocationArea{}, err
+		}
+
+		return locations, nil
+	}
+
+	res, err := c.httpClient.Get(url)
 	if err != nil {
 		return RespLocationArea{}, err
 	}
@@ -28,5 +36,6 @@ func LocationAreaList(pageURL *string) (RespLocationArea, error) {
 		return RespLocationArea{}, err
 	}
 
+	c.cache.Add(url, body)
 	return locations, nil
 }

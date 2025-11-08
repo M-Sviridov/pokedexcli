@@ -6,11 +6,14 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"github.com/M-Sviridov/pokedexcli/internal/pokeapi"
 )
 
 type config struct {
-	Next     *string
-	Previous *string
+	pokeapiClient pokeapi.Client
+	Next          *string
+	Previous      *string
 }
 
 type cliCommand struct {

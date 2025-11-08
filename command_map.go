@@ -3,11 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/M-Sviridov/pokedexcli/internal/pokeapi"
 )
 
 func commandMap(cfg *config) error {
-	locations, err := pokeapi.LocationAreaList(cfg.Next)
+	locations, err := cfg.pokeapiClient.LocationAreaList(cfg.Next)
 	if err != nil {
 		return err
 	}
@@ -27,7 +26,7 @@ func commandMapb(cfg *config) error {
 		return errors.New("you're on the first page")
 	}
 
-	locations, err := pokeapi.LocationAreaList(cfg.Previous)
+	locations, err := cfg.pokeapiClient.LocationAreaList(cfg.Previous)
 	if err != nil {
 		return err
 	}
