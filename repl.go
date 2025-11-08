@@ -19,7 +19,7 @@ type config struct {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config, string) error
+	callback    func(*config, ...string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -63,19 +63,20 @@ func startRepl(cfg *config) {
 		}
 
 		input := cleanInput(scanner.Text())
-		areaName := ""
+		args := []string{}
 		if len(input) == 0 {
 			continue
 		}
+
 		if len(input) > 1 {
-			areaName = input[1]
+			args = input[1:]
 		}
 
 		commandName := input[0]
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			err := command.callback(cfg, areaName)
+			err := command.callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
